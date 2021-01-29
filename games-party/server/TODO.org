@@ -1,0 +1,17 @@
+* TODO Implementa il muto/audio on 
+* TODO Implementa il video on/off 
+
+* TODO Stilizza i video
+* TODO Stilizza i player offline
+
+* TODO Controlla il bug quando sballi in presenza di matta
+* TODO ridisegnare i game controls in un drawer
+* TODO Investigate current player hand and prompt (move it to the context)
+* TODO Implementare il full-screen (non funziona!)
+
+* DONE Controlla meglio che i conti tornino sempre!
+* DONE disegnare la :currentBet:
+* DONE marcare il dealer
+* DONE evidenziare il giocatore di turno
+* DONE Brucia i quattro!
+* DONE Integra la videochat

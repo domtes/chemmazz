@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "experimentalDecorators": true,
+    "target": "es6"
+  },
+  "include": [
+    "**/*.ts"
+  ]
+}
