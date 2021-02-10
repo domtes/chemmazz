@@ -8,6 +8,7 @@ import { GameContext } from '../context/store';
 import { StashManagementProvider } from '../context/stashManagementContext';
 
 import StashManagementDrawer from '../components/StashManagementDrawer';
+import HighlightedPlayer from '../components/HighlightedPlayer';
 import Player from '../components/Player';
 import Hand from '../components/Hand';
 import Prompt from '../components/Prompt';
@@ -124,46 +125,15 @@ const PlayRoomPage = ({ params }) => {
                                         <Statistic title="Piatto" value={state.gameState.pot} />
 
                                         <Space direction="horizontal" align="baseline" split="VS" size="large" className="the-ring">
-                                            <div className="player">
-                                                <div className="picture" id="player">
-                                                    <div className="badges">
-                                                        <Player player={state.gameState.player1} displayAdminMenu={false} />
-                                                        <div className="lives">
-                                                            <i className="fas fa-heart" title="1 Vita"></i>
-                                                            <i className="fas fa-heart" title="1 Vita"></i>
-                                                            <i className="fas fa-heart" title="1 Vita"></i>
-                                                        </div>
-
-                                                        <div className="status"></div>
-                                                    </div>
-                                                </div>
-                                                <div className="name">
-                                                    {state.gameState.player1.displayName} (Banco)
-                                                {(state.gameState.player1.prompt && state.gameState.player1.prompt.visible) && (<Badge status="processing" />)}
-                                                </div>
+                                            <Space direction="vertical">
+                                                <HighlightedPlayer player={state.gameState.player1} />
                                                 <Hand cards={state.gameState.player1.hand} showHole={false} />
-                                            </div>
-
-                                            <div className="player">
-                                                <div className="picture" id="player">
-                                                    <Player player={state.gameState.player2} displayAdminMenu={false} />
-                                                    <div className="badges">
-                                                        <div className="lives">
-                                                            <i className="fas fa-heart" title="1 Vita"></i>
-                                                            <i className="fas fa-heart" title="1 Vita"></i>
-                                                            <i className="fas fa-heart" title="1 Vita"></i>
-                                                        </div>
-
-                                                        <div className="status"></div>
-                                                    </div>
-                                                </div>
-                                                <div className="name">
-                                                    {state.gameState.player2.displayName}
-                                                    {(state.gameState.player2.prompt && state.gameState.player2.prompt.visible) && (<Badge status="processing" />)}
-                                                </div>
+                                            </Space>
+                                            <Space direction="vertical">
+                                                <HighlightedPlayer player={state.gameState.player2} />
                                                 <Hand cards={state.gameState.player2.hand} showHole={false} />
                                                 <Statistic title="Scommessa" value={state.gameState.currentBet} />
-                                            </div>
+                                            </Space>
                                         </Space>
                                     </Space>
                                 )}
@@ -175,7 +145,7 @@ const PlayRoomPage = ({ params }) => {
                                     {Array.from<any>(state.gameState.players.values()).filter((player, index) => {
                                         return player.playing;
                                     }).map((player, index) => (
-                                        <Player key={index} player={player} displayAdminMenu={isRoomOwner} />
+                                        <Player key={index} player={player} displayAdminMenu={isRoomOwner} isCurrentPlayer={state.room.sessionId === player.sessionId} />
                                     ))}
                                 </Space>
 
@@ -184,7 +154,7 @@ const PlayRoomPage = ({ params }) => {
                                     {Array.from<any>(state.gameState.players.values()).filter((player, index) => {
                                         return !player.playing;
                                     }).map((player, index) => (
-                                        <Player key={index} player={player} displayAdminMenu={isRoomOwner} />
+                                        <Player key={index} player={player} displayAdminMenu={isRoomOwner} isCurrentPlayer={state.room.sessionId === player.sessionId} />
                                     ))}
                                 </Space>
                             </Col>

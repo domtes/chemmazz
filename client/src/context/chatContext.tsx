@@ -1,4 +1,4 @@
-import { createContext, useContext, useRef, useState, ReactNode, useEffect, MutableRefObject, useCallback } from 'react';
+import { createContext, useContext, useRef, useState, ReactNode, useEffect, MutableRefObject } from 'react';
 import SimplePeer from 'simple-peer';
 
 import { GameContext } from './store';
@@ -17,16 +17,18 @@ export interface IChatContext {
 
     callPlayer: (player: IPlayer, room: any) => void;
     streamsRef: MutableRefObject<Record<string, MediaStream>> | null;
+    connectedPeers: Set<string>
 }
 
 export const ChatContext = createContext<IChatContext>({
-    audio: false,
+    audio: true,
     video: true,
 
     toggleAudio: () => console.warn('No implementation provided'),
     toggleVideo: () => console.warn('No implementation provided'),
     callPlayer: (player, room) => console.warn('No implementation provided', player, room),
-    streamsRef: null
+    streamsRef: null,
+    connectedPeers: new Set()
 });
 
 export const useChatContext = () => useContext(ChatContext);
@@ -43,14 +45,17 @@ export const ChatProvider = ({ children }: Props) => {
 
     const peersRef = useRef<Record<string, SimplePeer.Instance>>({});
     const streamsRef = useRef<Record<string, MediaStream>>({});
+    const [connectedPeers, setConnectedPeers] = useState<Set<string>>(new Set());
 
     const setupVideoStream = async () => {
         if (state.room === null) return null;
         const stream = await navigator.mediaDevices.getUserMedia({
             video: true,
-            audio: false
+            audio: true
         });
         streamsRef.current[state.room.sessionId] = stream;
+        setConnectedPeers(new Set([connectedPeers.values(), state.room.sessionId]));
+
         console.log('Got self stream:', state.room.sessionId, streamsRef.current);
         return stream;
     };
@@ -91,7 +96,7 @@ export const ChatProvider = ({ children }: Props) => {
             stream,
         });
 
-        peer.on("signal", signal => {
+        peer.on('signal', signal => {
             state.room.send('webrtc', {
                 command: 'call-player', payload: {
                     'callerId': callerId,
@@ -108,6 +113,7 @@ export const ChatProvider = ({ children }: Props) => {
         peer.on('stream', stream => {
             console.log('[webrtc] Got remote stream (1)', userToSignal, stream);
             streamsRef.current[userToSignal] = stream;
+            setConnectedPeers(new Set([connectedPeers.values(), userToSignal]));
         });
 
         return peer;
@@ -158,6 +164,8 @@ export const ChatProvider = ({ children }: Props) => {
             peer.on('stream', stream => {
                 console.log('[webrtc] Got remote stream (2)', msg.callerId);
                 streamsRef.current[msg.callerId] = stream;
+
+                setConnectedPeers(new Set([connectedPeers.values(), msg.callerId]));
             });
             peersRef.current[msg.callerId] = peer;
         });
@@ -184,7 +192,8 @@ export const ChatProvider = ({ children }: Props) => {
             toggleAudio,
             toggleVideo,
             callPlayer,
-            streamsRef
+            streamsRef,
+            connectedPeers
         }}>
             {children}
         </ChatContext.Provider>
