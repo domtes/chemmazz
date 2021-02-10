@@ -106,8 +106,7 @@ export class GameRoom extends Room<GameState> {
     }
 
     dealCard(player: Player, faceUp: boolean = false) {
-        const cardPlayer = new CardPlayer(player.displayName,
-            new Hand());
+        const cardPlayer = new CardPlayer(player.displayName, new Hand());
 
         this.deck.deal(cardPlayer.getHand(), 1);
         this.state.remainingCards -= 1;
