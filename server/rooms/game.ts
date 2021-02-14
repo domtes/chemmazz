@@ -51,6 +51,9 @@ export class GameRoom extends Room<GameState> {
     }
 
     getSeatedPlayers(): Player[] {
+        if (this.state === undefined) {
+            return [];
+        }
         const players = Array.from<Player>(this.state.players.values());
         return players.filter((p) => { return (p.playing) });
     }
