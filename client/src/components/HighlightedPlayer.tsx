@@ -19,7 +19,7 @@ const HighlightedPlayer = ({ player }) => {
     return (
         <div className="player">
             <div className="picture">
-                <video ref={videoRef} title={player.displayName} autoPlay />
+                <video ref={videoRef} title={player.displayName} autoPlay muted />
                 <div className="lives">
                     <i className="fas fa-heart" title="1 Vita"></i>
                     <i className="fas fa-heart" title="1 Vita"></i>
@@ -28,7 +28,7 @@ const HighlightedPlayer = ({ player }) => {
                 <div className="status"></div>
             </div>
             <div className="name">
-                {player.displayName} (Banco) {(player.prompt && player.prompt.visible) && (<Badge status="processing" />)}
+                {player.displayName} {(player.prompt && player.prompt.visible) && (<Badge status="processing" />)}
             </div>
         </div>
     )
